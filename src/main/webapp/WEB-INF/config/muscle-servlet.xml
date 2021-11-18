@@ -36,6 +36,8 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 
+	<mvc:default-servlet-handler/>
+
 	<!-- 로그인 검증 MessageSource -->
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="defaultEncoding">
@@ -49,7 +51,7 @@
 		</property>
 	</bean>
 
-	<!-- <aop:aspectj-autoproxy/> -->
+	<aop:aspectj-autoproxy/>
 	
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 	
@@ -57,8 +59,8 @@
 
 	<bean id="loggerInterceptor" class="muscle.common.logger.LoggerInterceptor" />
 
-	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
-
+	<!--<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />-->
+	<!--DefaultAnnotationHandlerMapping은 mvc:Annotation-driven에 포함되기 때문에 취소선이 그어짐-->
 	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0" />
 
 	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
