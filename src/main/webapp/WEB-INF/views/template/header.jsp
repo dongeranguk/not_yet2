@@ -114,9 +114,9 @@ font-family: arial;
 <div style="float:right; width:360px; ">
  <table style="width:100%; padding:0px; margin:0px; border:0px; height:30px;">
       <tr style="margin:0px; padding:0px;">
-         <td align="right" style="padding:0px;"><button type="button" onclick="location.href='/muscle/member/openLoginForm.do'" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>로그인</font>
+         <td align="right" style="padding:0px;"><button type="button" onclick="location.href='/muscle/member/openLoginForm'" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>로그인</font>
                </button></td>
-         <td align="right" style="padding:0px;"><button type="button" class="btn btn-link" style="padding:5px;" onclick="location.href='/muscle/member/openJoinForm.do'"><font size='2' color='hotpink'>회원가입</font>
+         <td align="right" style="padding:0px;"><button type="button" class="btn btn-link" style="padding:5px;" onclick="location.href='/muscle/member/openJoinForm'"><font size='2' color='hotpink'>회원가입</font>
               </button></td>
          <td align="right" style="padding:0px;"><a href="javascript:myPage();"><button type="button" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>마이페이지</font></button></a>  
          </td>
@@ -135,7 +135,7 @@ font-family: arial;
  <table style="width:100%; padding:0px; margin:0px; border:0px; height:30px;">
       <tr style="margin:0px; padding:0px;">
           <td align="right" style="padding:0px;">${session_MEM_ID}<font size='2' color='hotpink'> 님 환영합니다!</font></td>   
-         <td align="right" style="padding:0px; width:70px;"><button type="button" onclick="location.href='/muscle/member/logout.do'" class="btn btn-link" style="padding:5px; width:100;"><font size='2' color='hotpink'>로그아웃</font>
+         <td align="right" style="padding:0px; width:70px;"><button type="button" onclick="location.href='/muscle/member/logout'" class="btn btn-link" style="padding:5px; width:100;"><font size='2' color='hotpink'>로그아웃</font>
                </button></td>
          <td align="right" style="padding:0px; width:80px;"><a href="javascript:myPage();"><button type="button" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>마이페이지</font></button></a>  
          </td> 
@@ -153,8 +153,8 @@ font-family: arial;
 <table style="width:100%; padding:0px; margin:0px; border:0px; height:30px; ">
       <tr style="margin:0px; padding:0px;">
         <td align="right" style="padding:0px;" class="td">${session_MEM_ID}<font size='2' color='hotpink'> 계정으로 로그인 했습니다.</font></td>
-        <td align="right" style="padding:0px;" class="td"><button type="button" onclick="location.href='/muscle/member/logout.do'" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>로그아웃</font></button></td>
-        <td align="right" style="padding:0px;" class="td"><button type="button" onclick="location.href='/muscle/admin/openAdminMember.do'" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>관리자페이지</font></button></td> 
+        <td align="right" style="padding:0px;" class="td"><button type="button" onclick="location.href='/muscle/member/logout'" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>로그아웃</font></button></td>
+        <td align="right" style="padding:0px;" class="td"><button type="button" onclick="location.href='/muscle/admin/openAdminMember.do'" class="btn btn-link" style="padding:5px;"><font size='2' color='hotpink'>관리자페이지</font></button></td>
         <td align="right" style="padding:0px;" class="td"><button type="button" onclick="location.href='/muscle/admin/order_admin_a.do'" class="btn btn-link" style="padding:0px 15px 0px 5px;"><font size='2' color='hotpink'>주문관리</font></button></td>        
       </tr>
 </table>

@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,16 +11,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
   <script src="<c:url value='/js/common.js'/>" charset="utf-8"></script>
-
+<title>아이디 찾기</title>
 </head>
 <script>
 function search_check(num) {
 	if (num == '1') {
-		document.getElementById("searchP").style.display = "none";
-		document.getElementById("searchI").style.display = "";	
+		document.getElementById("searchPW").style.display = "none";
+		document.getElementById("searchID").style.display = "";
 	} else {
-		document.getElementById("searchI").style.display = "none";
-		document.getElementById("searchP").style.display = "";
+		document.getElementById("searchID").style.display = "none";
+		document.getElementById("searchPW").style.display = "";
 	}
 }
 
@@ -44,7 +43,7 @@ var idSearch_click = function(){
 	var name = $("#MEM_NAME").val();
 	$.ajax({
 		type:"POST",
-		url:"${pageContext.request.contextPath}/member/openFindIdResult.do?MEM_NAME="
+		url:"${pageContext.request.contextPath}/member/openFindIdResult?MEM_NAME="
 				+name+"&MEM_EMAIL="+$('#MEM_EMAIL').val(),
 		success:function(data){
 			if(data == "0"){
@@ -64,12 +63,12 @@ var pwSearch_click = function(){
 	alert("요청하신 정보를 확인 중 입니다..\n최대 10초의 시간이 소요될 수 있습니다.\n확인 버튼을 눌러주세요.");
 	$.ajax({
 		type:"GET",
-		url : "<c:url value='/member/openFindPwResult.do'/>",
+		url : "<c:url value='/member/openFindPwResult'/>",
 		data : "MEM_ID="+ $("#MEM_ID2").val() + "&MEM_EMAIL=" + $("#MEM_EMAIL2").val() + "&random=" + $("#random").val(),
 		success : function(data){
 			if(data == true){
 			alert("임시비밀번호를 발송하였습니다.");
-			window.location = "http://localhost:8007/muscle/member/openLoginForm.do";
+			window.location = "/muscle/member/openLoginForm";
 			}else{
 				alert("아이디 혹은 이메일을 잘못 입력하셨습니다.\n다시 한번 입력 바랍니다.");
 			}
@@ -93,6 +92,7 @@ var pwSearch_click = function(){
 <div style="height: 30px;"></div>
 
 <div class="container" style="width:30%;">
+
 	<div style="margin-bottom: 10px;" class="custom-control custom-radio custom-control-inline">
 		<input type="radio" class="custom-control-input" id="search_1" name="search_total" onclick="search_check(1)" checked="checked">
 		<label class="custom-control-label font-weight-bold text-black"	for="search_1">아이디 찾기</label>
@@ -103,7 +103,7 @@ var pwSearch_click = function(){
 	</div>
 	
 					<!-- 아이디 찾기 -->
-				<div id="searchI">
+				<div id="searchID">
 					<div class="form-group">
 						<label class="text-black" for="inputName_1">이름</label>
 						<div>
@@ -118,13 +118,12 @@ var pwSearch_click = function(){
 					</div>
 					<div class="form-group">
 						<button id="searchBtn" type="button" onclick="idSearch_click()" class="btn btn-primary" style="width:49%; float:left;">확인</button>
-						<a class="btn btn-outline-primary"	href="${pageContext.request.contextPath}/member/openLoginForm.do" style="width:49%; float:right;">취소</a>
+						<a class="btn btn-outline-primary"	href="${pageContext.request.contextPath}/member/openLoginForm" style="width:49%; float:right;">취소</a>
 					</div>
 				</div>
 				
-				
 				<!-- 비밀번호 찾기 -->
-				<div id="searchP" style="display: none;">
+				<div id="searchPW" style="display: none;">
 					<div class="form-group">
 						<label class="text-black" for="inputId">아이디</label>
 						<div>
@@ -139,8 +138,8 @@ var pwSearch_click = function(){
 					</div>
 					<div class="form-group">
 						<button id="searchBtn2" type="button" onclick="pwSearch_click()" class="btn btn-primary" style="width:49%; float:left;">확인</button>
-						<a class="btn btn-outline-primary"	href="${pageContext.request.contextPath}/member/openLoginForm.do" style="width:49%; float:right;">취소</a>
-						<input type="hidden" path="random" id="random" value="${random}"/>
+						<a class="btn btn-outline-primary"	href="${pageContext.request.contextPath}/member/openLoginForm" style="width:49%; float:right;">취소</a>
+						<input type="hidden" path="random" id="random" value="${ran}"/>
 				</div>
 				</div>
 </div>
@@ -152,4 +151,3 @@ var pwSearch_click = function(){
    </footer>
 </body>
 </html>
-

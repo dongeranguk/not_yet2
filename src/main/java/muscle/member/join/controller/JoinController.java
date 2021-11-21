@@ -10,11 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import muscle.common.common.CommandMap;
@@ -22,7 +18,8 @@ import muscle.member.join.dao.JoinVO;
 import muscle.member.join.service.JoinService;
 import muscle.member.join.service.JoinValidator;
 import muscle.member.login.service.LoginService;
-@Controller
+@RestController
+@RequestMapping("/member")
 public class JoinController {
     Logger log = Logger.getLogger(this.getClass());
 
@@ -35,14 +32,14 @@ public class JoinController {
     @Resource(name="loginService")
     private LoginService loginService;
 
-    @RequestMapping(value="/member/openJoinForm.do")
+    @RequestMapping(value="/openJoinForm")
     public ModelAndView openJoinForm(CommandMap commandMap)throws Exception{
         ModelAndView mv = new ModelAndView("/member/joinForm");
         mv.addObject("joinVO", new JoinVO());
         return mv;
     }
 
-    @RequestMapping(value="/member/openKakaoJoinForm.do", method= {RequestMethod.GET, RequestMethod.POST}) // 요청 URL 처리 메소드가 없어서 ClassCastException 발생?
+    @RequestMapping(value="/openKakaoJoinForm", method= {RequestMethod.GET, RequestMethod.POST}) // 요청 URL 처리 메소드가 없어서 ClassCastException 발생?
     public ModelAndView openKakaoJoinForm(CommandMap commandMap, HttpServletRequest request) throws Exception {
         ModelAndView mv = new ModelAndView();
         mv.addObject("joinVO", new JoinVO());
@@ -55,7 +52,7 @@ public class JoinController {
         return mv;
     }
 
-    @RequestMapping(value="/member/insertKakaoJoin.do")
+    @RequestMapping(value="/insertKakaoJoin")
     public ModelAndView insertKakaoJoin(CommandMap commandMap, @ModelAttribute JoinVO joinVO, Errors errors, BindingResult result) throws Exception {
         ModelAndView mv = new ModelAndView();
         System.out.println(commandMap.get("MEM_KAKAO_ID"));
@@ -80,7 +77,7 @@ public class JoinController {
         return mv;
     }
 
-    @RequestMapping(value="/member/insertJoin.do")
+    @RequestMapping(value="/insertJoin")
     public ModelAndView insertJoin(CommandMap commandMap,@ModelAttribute JoinVO joinVO, Errors errors, BindingResult result) throws Exception {
         ModelAndView mv = new ModelAndView();
         JoinValidator joinValidator = new JoinValidator();
@@ -107,7 +104,7 @@ public class JoinController {
         return mv;
     }
 
-    @RequestMapping(value = "/member/idCheck.do") //아이디 중복확인
+    @RequestMapping(value = "/idCheck") //아이디 중복확인
     public @ResponseBody String idCheck(CommandMap commandMap) throws Exception {
 
         System.out.println(commandMap.getMap());
@@ -118,7 +115,7 @@ public class JoinController {
         return idCheck;
     }
 
-    @RequestMapping(value = "/member/nickCheck.do") //닉네임 중복확인
+    @RequestMapping(value = "/nickCheck") //닉네임 중복확인
     public @ResponseBody String nickCheck(CommandMap commandMap) throws Exception {
 
         System.out.println(commandMap.getMap());
@@ -129,7 +126,7 @@ public class JoinController {
         return nickCheck;
     }
 
-    @RequestMapping(value="/member/openAgree.do") //이용약관 보여주기
+    @RequestMapping(value="/openAgree") //이용약관 보여주기
     public ModelAndView openAgree(CommandMap commandMap)throws Exception{
         ModelAndView mv = new ModelAndView("/member/agree");
 

@@ -120,7 +120,7 @@
  -->
 <!-- 액션login.jsp 경로를 콘트롤러의 RequestMapping과 같음 -->
 <form:form commandName="userVO" name="myform"
-	action="/muscle/member/kakaoLogin.do" method="post" class="form-signin">
+	action="/muscle/member/kakaoLogin" method="post" class="form-signin">
 
 	<%@ include file="/WEB-INF/views/template/header.jsp"%>
 	<div style="height: 160px;"></div>
@@ -168,12 +168,12 @@
 		<div class="form-group form-check" style="margin-top: 10px;">
 			<div style="float: left;">
 				<span style="margin-left: 30;"><a
-					href="/muscle/member/findId.do"><font color='hotpink'>아이디/비밀번호 찾기</font></a></span>
+					href="/muscle/member/findId"><font color='hotpink'>아이디/비밀번호 찾기</font></a></span>
 
 			</div>
 			<div style="float: right;">
 				<span style="margin-right: 90;"><a
-					href="/muscle/member/openKakaoJoinForm.do?kakao_id=${MEM_KAKAO_ID}&kakao_link=${MEM_KAKAO_LINK}"><font color='hotpink'>회원가입</font></a></span>
+					href="/muscle/member/openKakaoJoinForm?kakao_id=${MEM_KAKAO_ID}&kakao_link=${MEM_KAKAO_LINK}"><font color='hotpink'>회원가입</font></a></span>
 			</div>
 		</div>
 	</div>
