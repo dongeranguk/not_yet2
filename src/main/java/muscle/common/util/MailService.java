@@ -19,7 +19,7 @@ public class MailService {
     public static void sendMail(String to, String authCode) {
         final String bodyEncoding = "UTF-8";
         String subject = "[MUSCLE] 비밀번호 찾기";
-        String fromEmail = "member-cs@muscle.com";
+        String fromEmail = "rooetym47@gmail.com";
         String fromUserName = "MSUCLE";
         String toEmail = to; // 받을 이메일 주소
 
@@ -31,7 +31,7 @@ public class MailService {
         StringBuffer sb = new StringBuffer();
         sb.append("<h1>비밀번호 찾기</h1>");
         sb.append("<h2>안녕하세요 ");
-        sb.append("MUSCLE 입니다.\n </h2>");
+        sb.append("<a href='http://localhost:8007/muscle/main/openMainList.do'>MUSCLE</a> 입니다.\n </h2>");
         sb.append("임시비밀번호는 " + "<h1>" + authCode + "</h1>" + " 입니다.\n\n");
         sb.append("본 메일은 발신 전용이므로, 회신되지 않으므로 문의사항은 <a href='http://localhost:8007/muscle/client/faqBoardList.do'>고객센터</a>를 이용해주세요.");
         String html = sb.toString();
