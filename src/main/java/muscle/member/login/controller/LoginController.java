@@ -8,13 +8,14 @@ import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import muscle.common.util.MailService;
 import org.apache.log4j.Logger;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -26,7 +27,6 @@ import muscle.member.join.service.JoinService;
 import muscle.member.login.dao.UserVO;
 import muscle.member.login.service.KakaoService;
 import muscle.member.login.service.LoginService;
-import muscle.member.login.service.MailService;
 
 
 @RestController
@@ -37,9 +37,6 @@ public class LoginController {
 
 	@Resource(name="mailService")
 	private MailService mailService;
-
-	@Inject
-	private JavaMailSender mailSender;
 
 	@Resource(name = "loginService")
 	private LoginService loginService;
@@ -124,7 +121,7 @@ public class LoginController {
 		HttpSession session = request.getSession();
 		if (session != null)
 			session.invalidate(); ModelAndView mv = new ModelAndView();
-			mv.setViewName("redirect:/main/logoutSc.do"); 
+			mv.setViewName("redirect:/main/logoutSc");
 			return mv;
 	}
 
@@ -166,7 +163,7 @@ public class LoginController {
 			session.setAttribute("session_MEM_KAKAO_ID", chk.get("MEM_KAKAO_ID"));
 			session.setAttribute("session_MEM_KAKAO_LINK", chk.get("MEM_KAKAO_LINK"));
 			session.setAttribute("session_MEMBER", chk);
-			mv.setViewName("redriect:/main/openMainList.do");
+			mv.setViewName("redirect:/main/openMainList.do");
 			return mv;
 		}
 		mv.setViewName("/member/openKakaoLoginForm");
@@ -283,16 +280,16 @@ public class LoginController {
 
 	@RequestMapping(value = "/findId") // 아이디 찾기 폼을 보여주는 메소드
 	public ModelAndView findId(CommandMap commandMap) throws Exception {
+		int ran = (int)Math.floor(Math.random() * 900000 + 100000);
+
 		ModelAndView mv = new ModelAndView("/member/findAccount");
-		int ran = new Random().nextInt(900000) + 100000;
-
 		mv.addObject("random",ran);
-
 		return mv;
 	}
 
 	@RequestMapping(value = "/openFindIdResult", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/text; charset=utf-8")
 	public @ResponseBody String findIdResult(CommandMap commandMap) throws Exception {
+		/*int ran = (int)Math.floor(Math.random() * 900000 + 100000);*/
 		String id = String.valueOf(loginService.findId(commandMap.getMap())); // findId - SELECT COUNT(*)
 		if(id.equals("1")) {
 			String findId = (String)(loginService.findIdWithEmail(commandMap.getMap()).get("MEM_ID"));
@@ -309,19 +306,27 @@ public class LoginController {
 	public ModelAndView findPw(CommandMap commandMap) throws Exception {
 		ModelAndView mv = new ModelAndView("/member/findAccount");
 		int ran = (int)Math.floor(Math.random() * 900000 + 100000);
-		mv.addObject("random",ran);
+		System.out.println("랜덤 값 : " + ran);
+		mv.addObject("random",ran); // random인데 ran을 지정해서...
 
 		return mv;
 	}
 
-	@RequestMapping(value = "/openFindPwResult", method=RequestMethod.GET) //鍮꾨�踰덊샇 李얘린
+	@RequestMapping(value = "/openFindPwResult", method=RequestMethod.POST)
 	@ResponseBody
-	public boolean findPwEmail(CommandMap commandMap,@RequestParam String MEM_ID, @RequestParam String MEM_EMAIL, @RequestParam int random, HttpServletRequest req) throws Exception {
-
+	public boolean findPwEmail(CommandMap commandMap) throws Exception {
+		boolean result;
+		//String authCode = (String)commandMap.get("random"); // null
+		//System.out.println("랜덤 값 : " + authCode); // null
+		System.out.println(commandMap.getMap()); // null X
+		//get()이 아닌 getMap() 으로 가져와야 null X
+		//하지만, 아래서는 get() 으로도 가져올 수 있는데 ajax의 콜백 함수 떄문인가?
 		String emailCheck = String.valueOf(loginService.findPwWithEmail(commandMap.getMap()));
-		System.out.println(emailCheck);
+
+		System.out.println("등록된 이메일로 찾은 아이디 수 : " + emailCheck);
+		//System.out.println(authCode); // null
 		if(emailCheck.equals("1")) {
-			int ran = new Random().nextInt(900000) + 100000;
+			/*
 			HttpSession session = req.getSession(true);
 			String authCode = String.valueOf(ran);
 			session.setAttribute("authCode", authCode);
@@ -329,13 +334,28 @@ public class LoginController {
 			String subject = "muscle 비밀번호 변경 코드 안내 입니다.";
 			StringBuilder sb = new StringBuilder();
 			sb.append("귀하의 임시 비밀번호는 " + authCode + "입니다.");
-
-			commandMap.put("MEM_ID", MEM_ID);
-			commandMap.put("MEM_EMAIL", MEM_EMAIL);
-			commandMap.put("authCode", authCode);
+*/
+			System.out.println(commandMap.get("MEM_ID"));
+			System.out.println(commandMap.get("MEM_EMAIL"));
+			System.out.println(commandMap.get("authCode"));
 			loginService.updateTempPw(commandMap.getMap());
-			return mailService.send(subject, sb.toString(),"chkch1991@gmail.com", MEM_EMAIL, null);
+
+			//위의 로직이 끝나고 나서도 값을 가져올 수 있다.
+			/*
+			commandMap.put("MEM_ID", commandMap.get("MEM_ID"));
+			commandMap.put("MEM_EMAIL", commandMap.get("MEM_EMAIL"));
+			commandMap.put("authCode", authCode);*/
+
+			String to = (String)commandMap.get("MEM_EMAIL");
+			String authCode = (String)commandMap.get("authCode");
+			mailService.sendMail(to, authCode);
+			result = true;
+			System.out.println(result);
+			return true;
+			/*return mailService.sendMail(subject, sb.toString(),"chkch1991@gmail.com", MEM_EMAIL, null);*/
 		}else {
+			result = false;
+			System.out.println(result);
 			return false;
 		}
 	}

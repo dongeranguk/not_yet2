@@ -12,6 +12,19 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
   <script src="<c:url value='/js/common.js'/>" charset="utf-8"></script>
 <title>아이디 찾기</title>
+	<style>
+		.container {
+			border: 1px solid gray;
+			padding: 5px 20px;
+			width: 50%;
+			height: 70%;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
 </head>
 <script>
 function search_check(num) {
@@ -59,12 +72,19 @@ var idSearch_click = function(){
 
 
 var pwSearch_click = function(){
-	var id = $('#MEM_ID2').val();
-	alert("요청하신 정보를 확인 중 입니다..\n최대 10초의 시간이 소요될 수 있습니다.\n확인 버튼을 눌러주세요.");
+	var params = {
+		MEM_ID : $("#MEM_ID").val(),
+		MEM_EMAIL : $("#MEM_EMAIL2").val(),
+		authCode : $("#random").val()
+	}
+
+	/*var id = $('#MEM_ID').val();
+	var email = $('#MEM_EMAIL').val();
+	alert("요청하신 정보를 확인 중 입니다..\n최대 10초의 시간이 소요될 수 있습니다.\n확인 버튼을 눌러주세요.");*/
 	$.ajax({
-		type:"GET",
+		type:"POST",
 		url : "<c:url value='/member/openFindPwResult'/>",
-		data : "MEM_ID="+ $("#MEM_ID2").val() + "&MEM_EMAIL=" + $("#MEM_EMAIL2").val() + "&random=" + $("#random").val(),
+		data : params,
 		success : function(data){
 			if(data == true){
 			alert("임시비밀번호를 발송하였습니다.");
@@ -91,8 +111,11 @@ var pwSearch_click = function(){
 </div>
 <div style="height: 30px;"></div>
 
-<div class="container" style="width:30%;">
-
+<div class="container">
+	<div id="searchtest">
+		<input type="button" id="testsearchID" name="searchID" value="아이디 찾기" onclick="search_check(1)" class="btn btn-primary"/>
+		<input type="button" id="testsearchPW" name="searchPW" value="비밀번호 찾기" onclick="search_check(2)" class="btn btn-primary"/>
+	</div>
 	<div style="margin-bottom: 10px;" class="custom-control custom-radio custom-control-inline">
 		<input type="radio" class="custom-control-input" id="search_1" name="search_total" onclick="search_check(1)" checked="checked">
 		<label class="custom-control-label font-weight-bold text-black"	for="search_1">아이디 찾기</label>
@@ -127,7 +150,7 @@ var pwSearch_click = function(){
 					<div class="form-group">
 						<label class="text-black" for="inputId">아이디</label>
 						<div>
-							<input type="text" class="form-control" id="MEM_ID2" name="MEM_ID2" placeholder="아이디를 입력해주세요.">
+							<input type="text" class="form-control" id="MEM_ID" name="MEM_ID" placeholder="아이디를 입력해주세요.">
 						</div>
 					</div>
 					<div class="form-group">
@@ -139,7 +162,7 @@ var pwSearch_click = function(){
 					<div class="form-group">
 						<button id="searchBtn2" type="button" onclick="pwSearch_click()" class="btn btn-primary" style="width:49%; float:left;">확인</button>
 						<a class="btn btn-outline-primary"	href="${pageContext.request.contextPath}/member/openLoginForm" style="width:49%; float:right;">취소</a>
-						<input type="hidden" path="random" id="random" value="${ran}"/>
+						<input type="hidden" path="random" id="random" value="${random}"/>
 				</div>
 				</div>
 </div>
