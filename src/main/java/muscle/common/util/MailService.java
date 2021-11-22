@@ -20,7 +20,7 @@ public class MailService {
         final String bodyEncoding = "UTF-8";
         String subject = "[MUSCLE] 비밀번호 찾기";
         String fromEmail = "rooetym47@gmail.com";
-        String fromUserName = "MSUCLE";
+        String fromUserName = "MUSCLE";
         String toEmail = to; // 받을 이메일 주소
 
         final String username = "rooetym47@gmail.com";

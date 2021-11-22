@@ -51,7 +51,7 @@
 		</property>
 	</bean>
 
-	<aop:aspectj-autoproxy/>
+	<!--<aop:aspectj-autoproxy/>-->
 	
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 	

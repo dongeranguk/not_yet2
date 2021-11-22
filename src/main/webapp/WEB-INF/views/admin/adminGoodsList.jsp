@@ -157,7 +157,7 @@
              });
      });
      
-     function fn_adminGoodsList(pageNo) { //페이징 함수
+     function fn_adminGoodsList(pageNo) {//페이징 함수
         var comAjax = new ComAjax();
      
         comAjax.setUrl("<c:url value='/admin/AdminGoods.do' />");//open으로 하면 콜백함수 전송이 안됨.

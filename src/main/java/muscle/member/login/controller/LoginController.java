@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 import muscle.common.util.MailService;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -29,7 +30,7 @@ import muscle.member.login.service.KakaoService;
 import muscle.member.login.service.LoginService;
 
 
-@RestController
+@Controller
 @RequestMapping("/member")
 public class LoginController {
 
@@ -120,8 +121,9 @@ public class LoginController {
 	public ModelAndView logout(CommandMap commandMap, HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
 		if (session != null)
-			session.invalidate(); ModelAndView mv = new ModelAndView();
-			mv.setViewName("redirect:/main/logoutSc");
+			session.invalidate();
+			ModelAndView mv = new ModelAndView();
+			mv.setViewName("/member/logout");
 			return mv;
 	}
 
@@ -137,9 +139,9 @@ public class LoginController {
 	}
 
 	@RequestMapping(value="/kakao_callback", method=RequestMethod.GET)
-	public ModelAndView redirectkakao(Model model, @RequestParam String code, CommandMap commandMap, HttpSession session, HttpServletResponse response) throws Exception {
-		ModelAndView mv = new ModelAndView();
-		System.out.println("코드 : " + code);
+	public String redirectkakao(Model model, @RequestParam String code, CommandMap commandMap, HttpSession session, HttpServletResponse response) throws Exception {
+		//ModelAndView mv = new ModelAndView();
+		System.out.println("redirectkakao메소드 코드 : " + code);
 
 		String kakaoToken = kakaoService.getReturnAccessToken(code);
 		System.out.println("카카오 토큰 : " + kakaoToken);
@@ -156,6 +158,7 @@ public class LoginController {
 		
 		
 		Map<String, Object> chk = loginService.findKakaoId(commandMap.getMap());
+		System.out.println(chk);
 		if(chk != null) {
 			session.setAttribute("session_MEM_ID", chk.get("MEM_ID"));
 			session.setAttribute("session_MEM_NUM", chk.get("MEM_NUM"));
@@ -163,18 +166,17 @@ public class LoginController {
 			session.setAttribute("session_MEM_KAKAO_ID", chk.get("MEM_KAKAO_ID"));
 			session.setAttribute("session_MEM_KAKAO_LINK", chk.get("MEM_KAKAO_LINK"));
 			session.setAttribute("session_MEMBER", chk);
-			mv.setViewName("redirect:/main/openMainList.do");
-			return mv;
+			//mv.setViewName("redirect:/main/openMainList.do");
+			//return mv;
+			return "redirect:/main/openMainList.do";
 		}
-		mv.setViewName("/member/openKakaoLoginForm");
-		return mv;
+		//mv.setViewName("/member/openKakaoLoginForm");
+		//return mv;
+		return "redirect:/member/openKakaoLoginForm";
 	}
 
-
-
 	@RequestMapping(value="/openKakaoLoginForm")
-	public ModelAndView kakaoLoginForm(CommandMap commandMap, HttpServletRequest request, Model model) throws Exception {
-		ModelAndView mv = new ModelAndView();
+	public String kakaoLoginForm(CommandMap commandMap, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		HttpSession session = request.getSession();
 		String kakaoId = (String)commandMap.get("MEM_KAKAO_ID");
 		String kakaoLink = (String)commandMap.get("MEM_KAKAO_LINK");
@@ -189,11 +191,11 @@ public class LoginController {
 
 
 		if(session.getAttribute("session_MEM_KAKAO_ID") != null) {
-			mv.setViewName("redirect:main/openMainList.do");
-			return mv;
+			//response.sendRedirect("main/openMainList.do");
+			return "redirect:main/openMainList.do";
 		}
-		mv.setViewName("/member/kakaoLoginForm");
-		return mv;
+		//response.sendRedirect("member/kakaoLogin");
+		return "member/kakaoLoginForm";
 	}
 
 	@RequestMapping(value="/kakaoLogin", method={RequestMethod.GET, RequestMethod.POST })

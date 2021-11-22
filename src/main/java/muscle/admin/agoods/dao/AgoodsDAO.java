@@ -7,30 +7,30 @@ import muscle.common.common.SearchDTO;
 import muscle.common.dao.AbstractDAO;
 @Repository("agoodsDAO")
 public class AgoodsDAO extends AbstractDAO{
-	
-	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> openAgoodsList(Map<String, Object>map)throws Exception{
-		return (List<Map<String, Object>>)selectPagingList("aGoods.aGoodsList", map);
-	}
-	
-	public void deleteAdminGoods(Map<String, Object> map)throws Exception{
-		delete("aGoods.deleteAdminGoods", map);		
-	}
-	
-	public void deleteAdminGoodsATT(Map<String, Object> map)throws Exception{
-	      delete("aGoods.deleteAdminGoodsATT", map);
-	   }
-	
-	public void updateGoods(Map<String, Object> map) throws Exception { // 惑前 荐沥
-		update("aGoods.updateGoods", map);
-	}	
-	
-	public void attributeDelete(Map<String, Object> map) throws Exception { // 惑前可记 昏力
-		insert("aGoods.attributeDelete", map);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> searchTypeList(SearchDTO searchDTO) throws Exception {
-		return (List<Map<String,Object>>) selectList("aGoods.selectTypeList", searchDTO);
-	}
+
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> openAgoodsList(Map<String, Object>map)throws Exception{
+        return (List<Map<String, Object>>)selectPagingList("aGoods.aGoodsList", map);
+    }
+
+    public void deleteAdminGoods(Map<String, Object> map)throws Exception{
+        delete("aGoods.deleteAdminGoods", map);
+    }
+
+    public void deleteAdminGoodsATT(Map<String, Object> map)throws Exception{
+        delete("aGoods.deleteAdminGoodsATT", map);
+    }
+
+    public void updateGoods(Map<String, Object> map) throws Exception { // 靸來拡 靾橃爼
+        update("aGoods.updateGoods", map);
+    }
+
+    public void attributeDelete(Map<String, Object> map) throws Exception { // 靸來拡鞓奠厴 靷牅
+        insert("aGoods.attributeDelete", map);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> searchTypeList(SearchDTO searchDTO) throws Exception {
+        return (List<Map<String,Object>>) selectList("aGoods.selectTypeList", searchDTO);
+    }
 }

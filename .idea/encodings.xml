@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/src/main/java/muscle/admin/account/dao/AdminAccountDAO.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/muscle/admin/acs/service/AcsService.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/muscle/admin/agoods/controller/AgoodsController.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/muscle/admin/agoods/dao/AgoodsDAO.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/muscle/admin/agoods/service/AgoodsService.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/muscle/admin/agoods/service/AgoodsServiceImpl.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/muscle/admin/amember/dao/AdminMemberDao.java" charset="UTF-8" />
