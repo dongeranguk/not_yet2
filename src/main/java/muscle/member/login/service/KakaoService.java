@@ -38,7 +38,7 @@ public class KakaoService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=5cc74eda6966240a1c6d5f938e19ad0c");
-            sb.append("&redirect_uri=http://localhost:8007/muscle/kakao_callback.do");
+            sb.append("&redirect_uri=http://localhost:8007/muscle/member/kakao_callback");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();

@@ -39,7 +39,7 @@ if(!$("#MEM_ID").val()){
  var MEM_ID = {MEM_ID : $('#MEM_ID').val()};
  
  $.ajax({
-     url:"<c:url value='/member/idCheck.do'/>",
+     url:"<c:url value='/member/idCheck'/>",
      type:'get',
      data: MEM_ID,
      success:function(data){              
@@ -76,7 +76,7 @@ if(!$("#MEM_NICK").val()){
 }
    var MEM_NICK = {MEM_NICK : $('#MEM_NICK').val()};
  $.ajax({
-     url:"<c:url value='/member/nickCheck.do'/>",
+     url:"<c:url value='/member/nickCheck'/>",
      type:'get',
      data: MEM_NICK,
      success:function(data){    
@@ -95,7 +95,7 @@ if(!$("#MEM_NICK").val()){
 };
 
 function openAgree(){
-    var newWindow=open("http://localhost:8007/muscle//member/openAgree.do","약관확인", "width=600, height=800");
+    var newWindow=open("http://localhost:8007/muscle/member/openAgree","약관확인", "width=600, height=800");
 
     if(frm.MEM_AGREE.disabled==true)
       frm.MEM_AGREE.disabled=false
@@ -184,7 +184,7 @@ function agreeCheck(frm)
 
 
 
-<form:form modelAttribute="joinVO" id="frm" name="frm" class="form-inline" method="post" action="/muscle/member/insertJoin.do">
+<form:form modelAttribute="joinVO" id="frm" name="frm" class="form-inline" method="post" action="/muscle/member/insertJoin">
       <table class="joinFormView" style="border:0; cellpadding:1; cellspacing:1;" align=center>
             <tr> 
                <td style="width:150px; padding-right:15px;" align="right" > 사용자 ID</td>
@@ -310,7 +310,7 @@ function agreeCheck(frm)
                <br>
             <a href="#this" class="btn" id="join"><input style="background-color:hotpink; color:white; border-color:hotpink;" type="button" class="btn btn-primary mb-2" name="checkButton" value="가입하기" disabled/></a> 
                   <input style="border-color:pink; color:pink; background-color:white;" type="reset" name="reset" value="다시입력" class="btn btn-outline-primary mb-2"/>&nbsp;&nbsp;&nbsp;
-                  <input style="border-color:pink; color:pink; background-color:white;" type="button" value="가입안함" class="btn btn-outline-primary mb-2" onclick="javascript:window.location='/muscle/main/openMainList.do'" />
+                  <input style="border-color:pink; color:pink; background-color:white;" type="button" value="가입안함" class="btn btn-outline-primary mb-2" onclick="javascript:window.location='/muscle/main/openMainList'" />
                </td>
             </tr>
 
@@ -335,7 +335,7 @@ function agreeCheck(frm)
 
       function fn_insertJoin() {
          var comSubmit = new ComSubmit("frm");
-         comSubmit.setUrl("<c:url value='/member/insertJoin.do' />");
+         comSubmit.setUrl("<c:url value='/member/insertJoin' />");
 
             if(!$("#MEM_ID").val()){
                   alert("아이디를 입력하세요");

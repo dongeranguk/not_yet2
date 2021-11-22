@@ -111,7 +111,7 @@
  -->
 <!-- 액션login.jsp 경로를 콘트롤러의 RequestMapping과 같음 -->
 <form:form commandName="userVO" name="myform"
-	action="/muscle/member/login.do" method="post" class="form-signin">
+	action="/muscle/member/login" method="post" class="form-signin">
 
 	<%@ include file="/WEB-INF/views/template/header.jsp"%>
 	<div style="height: 160px;"></div>
@@ -156,18 +156,18 @@
 		<input type="submit" class="btn btn-lg btn-primary btn-block"
 			style="margin-left: auto; width: 100%; background-color:pink; color:white; border-color:pink;" value="로그인">
 		
-			<a href="/muscle/login/kakao_login.do">
+			<a href="/muscle/member/login/kakao_login">
 				<img width="50%" height="50" style="margin-top:10px;" src="../img/kakao_login_medium_wide.png"/>
 			</a>
 		
 		<div class="form-group form-check" style="margin-top: 10px;">
 			<div style="float: left;">
 				<span style="margin-left: 30;"><a
-					href="/muscle/member/findId.do"> <font color='hotpink'> 아이디/비밀번호 찾기 </font></a></span>
+					href="/muscle/member/findId"> <font color='hotpink'> 아이디/비밀번호 찾기 </font></a></span>
 			</div>
 			<div style="float: right;">
 				<span style="margin-right: 90;"><a
-					href="/muscle/member/openJoinForm.do"> <font color='hotpink'> 회원가입 </font></a></span>
+					href="/muscle/member/openJoinForm"> <font color='hotpink'> 회원가입 </font></a></span>
 			</div>
 		</div>
 

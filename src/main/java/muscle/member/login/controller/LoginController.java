@@ -1,27 +1,26 @@
 package muscle.member.login.controller;
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import muscle.common.util.MailService;
 import org.apache.log4j.Logger;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import muscle.common.common.CommandMap;
@@ -29,19 +28,16 @@ import muscle.member.join.service.JoinService;
 import muscle.member.login.dao.UserVO;
 import muscle.member.login.service.KakaoService;
 import muscle.member.login.service.LoginService;
-import muscle.member.login.service.MailService;
 
 
 @Controller
+@RequestMapping("/member")
 public class LoginController {
 
 	Logger log = Logger.getLogger(this.getClass());
 
 	@Resource(name="mailService")
 	private MailService mailService;
-
-	@Inject
-	private JavaMailSender mailSender;
 
 	@Resource(name = "loginService")
 	private LoginService loginService;
@@ -52,29 +48,9 @@ public class LoginController {
 	@Resource(name="joinService")
 	private JoinService joinService;
 
-
-	/*
-	 * @RequestMapping(value = "/member/openLoginForm.do") // loginForm.jsp public
-	 * ModelAndView loginForm(HttpServletRequest request, Model model) throws
-	 * Exception {
-	 * 
-	 * 
-	 * 
-	 * 
-	 * //session HttpSession session = request.getSession();
-	 * 
-	 * System.out.println("session : " + session.getAttribute("session_MEMBER"));
-	 * 
-	 * if(session.getAttribute("session_MEMBER")!=null) { ModelAndView mv = new
-	 * ModelAndView(); mv.setViewName("redirect:main/openMainList.do"); return mv; }
-	 * else { ModelAndView mv = new ModelAndView("/member/loginForm");
-	 * model.addAttribute("userVo", new UserVo()); return mv; } }
-	 */
-
-
-	@RequestMapping(value = "/member/openLoginForm.do") // loginForm.jsp
-	public String loginForm(HttpServletRequest request, Model model) throws Exception {
-
+	@RequestMapping(value = "/openLoginForm") // loginForm.jsp
+	public ModelAndView loginForm(HttpServletRequest request, Model model) throws Exception {
+		ModelAndView mv = new ModelAndView();
 
 		//session
 		HttpSession session = request.getSession();
@@ -82,16 +58,18 @@ public class LoginController {
 		System.out.println("session : " + session.getAttribute("session_MEMBER"));
 
 		if(session.getAttribute("session_MEMBER")!=null) {
-			return "redirect:main/openMainList.do";
+			mv.setViewName("redirect:main/openMainList.do");
+			return mv;
 
 		} else {
-			model.addAttribute("userVO", new UserVO());
-			return "member/loginForm";
+			mv.addObject("userVO", new UserVO());
+			mv.setViewName("/member/loginForm");
+			return mv;
 		}
 	}
 
 
-	@RequestMapping(value = "/member/login.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView login(@ModelAttribute @Valid UserVO vo, BindingResult result, CommandMap commandMap, HttpServletRequest request) throws Exception {
 		ModelAndView mv = new ModelAndView("/member/login");
 		String message = "";
@@ -139,28 +117,31 @@ public class LoginController {
 		return mv;
 	}
 
-	@RequestMapping(value="/member/logout.do") // 로그아웃 
+	@RequestMapping(value="/logout") // 로그아웃
 	public ModelAndView logout(CommandMap commandMap, HttpServletRequest request) throws Exception {
-		HttpSession session = request.getSession(); if (session != null)
-			session.invalidate(); ModelAndView mv = new ModelAndView();
-			mv.setViewName("redirect:/main/logoutSc.do"); 
-			return mv; 
+		HttpSession session = request.getSession();
+		if (session != null)
+			session.invalidate();
+			ModelAndView mv = new ModelAndView();
+			mv.setViewName("/member/logout");
+			return mv;
 	}
 
-	@RequestMapping(value="/login/kakao_login.do")
-	public String kakaoLogin() {
+	@RequestMapping(value="/login/kakao_login")
+	public void kakaoLogin(HttpServletResponse response) throws IOException {
 		StringBuffer loginUrl = new StringBuffer();
 		loginUrl.append("https://kauth.kakao.com/oauth/authorize?client_id=");
 		loginUrl.append("5cc74eda6966240a1c6d5f938e19ad0c");
 		loginUrl.append("&redirect_uri=");
-		loginUrl.append("http://localhost:8007/muscle/kakao_callback.do");
+		loginUrl.append("http://localhost:8007/muscle/member/kakao_callback");
 		loginUrl.append("&response_type=code");
-		return "redirect:" + loginUrl.toString();
+		response.sendRedirect(loginUrl.toString());
 	}
 
-	@RequestMapping(value="/kakao_callback.do", method=RequestMethod.GET)
-	public String redirectkakao(Model model, @RequestParam String code, CommandMap commandMap, HttpSession session, HttpServletRequest request) throws Exception {
-		System.out.println("코드 : " + code);
+	@RequestMapping(value="/kakao_callback", method=RequestMethod.GET)
+	public String redirectkakao(Model model, @RequestParam String code, CommandMap commandMap, HttpSession session, HttpServletResponse response) throws Exception {
+		//ModelAndView mv = new ModelAndView();
+		System.out.println("redirectkakao메소드 코드 : " + code);
 
 		String kakaoToken = kakaoService.getReturnAccessToken(code);
 		System.out.println("카카오 토큰 : " + kakaoToken);
@@ -177,6 +158,7 @@ public class LoginController {
 		
 		
 		Map<String, Object> chk = loginService.findKakaoId(commandMap.getMap());
+		System.out.println(chk);
 		if(chk != null) {
 			session.setAttribute("session_MEM_ID", chk.get("MEM_ID"));
 			session.setAttribute("session_MEM_NUM", chk.get("MEM_NUM"));
@@ -184,15 +166,17 @@ public class LoginController {
 			session.setAttribute("session_MEM_KAKAO_ID", chk.get("MEM_KAKAO_ID"));
 			session.setAttribute("session_MEM_KAKAO_LINK", chk.get("MEM_KAKAO_LINK"));
 			session.setAttribute("session_MEMBER", chk);
+			//mv.setViewName("redirect:/main/openMainList.do");
+			//return mv;
 			return "redirect:/main/openMainList.do";
 		}
-		return "redirect:/member/openKakaoLoginForm.do";
+		//mv.setViewName("/member/openKakaoLoginForm");
+		//return mv;
+		return "redirect:/member/openKakaoLoginForm";
 	}
 
-
-
-	@RequestMapping(value="/member/openKakaoLoginForm.do")
-	public String kakaoLoginForm(CommandMap commandMap, HttpServletRequest request, Model model) throws Exception {
+	@RequestMapping(value="/openKakaoLoginForm")
+	public String kakaoLoginForm(CommandMap commandMap, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		HttpSession session = request.getSession();
 		String kakaoId = (String)commandMap.get("MEM_KAKAO_ID");
 		String kakaoLink = (String)commandMap.get("MEM_KAKAO_LINK");
@@ -207,12 +191,14 @@ public class LoginController {
 
 
 		if(session.getAttribute("session_MEM_KAKAO_ID") != null) {
+			//response.sendRedirect("main/openMainList.do");
 			return "redirect:main/openMainList.do";
 		}
+		//response.sendRedirect("member/kakaoLogin");
 		return "member/kakaoLoginForm";
 	}
 
-	@RequestMapping(value="/member/kakaoLogin.do", method={RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value="/kakaoLogin", method={RequestMethod.GET, RequestMethod.POST })
 	public ModelAndView kakaoLogin(@ModelAttribute @Valid UserVO vo, BindingResult result, CommandMap commandMap, HttpServletRequest request) throws Exception {
 		ModelAndView mv = new ModelAndView("/member/kakaoLogin");
 		String url = "";
@@ -286,7 +272,7 @@ public class LoginController {
 
 	}
 
-	@RequestMapping(value="/main/logoutSc.do")
+	@RequestMapping(value="/main/logoutSc")
 	public ModelAndView openJoinForm(CommandMap commandMap)throws Exception{
 		ModelAndView mv = new ModelAndView("/member/logout");
 
@@ -294,50 +280,55 @@ public class LoginController {
 	}
 
 
-	@RequestMapping(value = "/member/findId.do") // 아이디 찾기 폼을 보여주는 메소드
+	@RequestMapping(value = "/findId") // 아이디 찾기 폼을 보여주는 메소드
 	public ModelAndView findId(CommandMap commandMap) throws Exception {
+		int ran = (int)Math.floor(Math.random() * 900000 + 100000);
+
 		ModelAndView mv = new ModelAndView("/member/findAccount");
-		int ran = new Random().nextInt(900000) + 100000;
-
 		mv.addObject("random",ran);
-
 		return mv;
 	}
 
-	@RequestMapping(value = "/member/openFindIdResult.do", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/text; charset=utf8")
-
+	@RequestMapping(value = "/openFindIdResult", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/text; charset=utf-8")
 	public @ResponseBody String findIdResult(CommandMap commandMap) throws Exception {
-		String id = String.valueOf(loginService.findId(commandMap.getMap()));
-
+		/*int ran = (int)Math.floor(Math.random() * 900000 + 100000);*/
+		String id = String.valueOf(loginService.findId(commandMap.getMap())); // findId - SELECT COUNT(*)
 		if(id.equals("1")) {
 			String findId = (String)(loginService.findIdWithEmail(commandMap.getMap()).get("MEM_ID"));
-			System.out.println(findId);
-			return findId;
-
+			System.out.println("findIdResult 결과(findId) : " + findId);
+			return findId; // 쿼리 결과값에서 일치하는 ID 값을 가져온다.
 		}else {
-			return id;
+			System.out.println("findIdResult 결과(id) : " + id);
+			return id; // SELECT COUNT(*) 값을 가져온다 따라서, 0
 		}
 	}
 
 
-	@RequestMapping(value = "/member/findPw.do") // 비밀번호 찾기 폼을 보여주는 메소드
+	@RequestMapping(value = "/findPw") // 비밀번호 찾기 폼을 보여주는 메소드
 	public ModelAndView findPw(CommandMap commandMap) throws Exception {
 		ModelAndView mv = new ModelAndView("/member/findAccount");
-		int ran = new Random().nextInt(900000) + 100000;
-
-		mv.addObject("random",ran);
+		int ran = (int)Math.floor(Math.random() * 900000 + 100000);
+		System.out.println("랜덤 값 : " + ran);
+		mv.addObject("random",ran); // random인데 ran을 지정해서...
 
 		return mv;
 	}
 
-	@RequestMapping(value = "/member/openFindPwResult.do", method=RequestMethod.GET) //鍮꾨�踰덊샇 李얘린
+	@RequestMapping(value = "/openFindPwResult", method=RequestMethod.POST)
 	@ResponseBody
-	public boolean findPwEmail(CommandMap commandMap,@RequestParam String MEM_ID, @RequestParam String MEM_EMAIL, @RequestParam int random, HttpServletRequest req) throws Exception {
-
+	public boolean findPwEmail(CommandMap commandMap) throws Exception {
+		boolean result;
+		//String authCode = (String)commandMap.get("random"); // null
+		//System.out.println("랜덤 값 : " + authCode); // null
+		System.out.println(commandMap.getMap()); // null X
+		//get()이 아닌 getMap() 으로 가져와야 null X
+		//하지만, 아래서는 get() 으로도 가져올 수 있는데 ajax의 콜백 함수 떄문인가?
 		String emailCheck = String.valueOf(loginService.findPwWithEmail(commandMap.getMap()));
-		System.out.println(emailCheck);
+
+		System.out.println("등록된 이메일로 찾은 아이디 수 : " + emailCheck);
+		//System.out.println(authCode); // null
 		if(emailCheck.equals("1")) {
-			int ran = new Random().nextInt(900000) + 100000;
+			/*
 			HttpSession session = req.getSession(true);
 			String authCode = String.valueOf(ran);
 			session.setAttribute("authCode", authCode);
@@ -345,13 +336,28 @@ public class LoginController {
 			String subject = "muscle 비밀번호 변경 코드 안내 입니다.";
 			StringBuilder sb = new StringBuilder();
 			sb.append("귀하의 임시 비밀번호는 " + authCode + "입니다.");
-
-			commandMap.put("MEM_ID", MEM_ID);
-			commandMap.put("MEM_EMAIL", MEM_EMAIL);
-			commandMap.put("authCode", authCode);
+*/
+			System.out.println(commandMap.get("MEM_ID"));
+			System.out.println(commandMap.get("MEM_EMAIL"));
+			System.out.println(commandMap.get("authCode"));
 			loginService.updateTempPw(commandMap.getMap());
-			return mailService.send(subject, sb.toString(),"chkch1991@gmail.com", MEM_EMAIL, null);
+
+			//위의 로직이 끝나고 나서도 값을 가져올 수 있다.
+			/*
+			commandMap.put("MEM_ID", commandMap.get("MEM_ID"));
+			commandMap.put("MEM_EMAIL", commandMap.get("MEM_EMAIL"));
+			commandMap.put("authCode", authCode);*/
+
+			String to = (String)commandMap.get("MEM_EMAIL");
+			String authCode = (String)commandMap.get("authCode");
+			mailService.sendMail(to, authCode);
+			result = true;
+			System.out.println(result);
+			return true;
+			/*return mailService.sendMail(subject, sb.toString(),"chkch1991@gmail.com", MEM_EMAIL, null);*/
 		}else {
+			result = false;
+			System.out.println(result);
 			return false;
 		}
 	}
