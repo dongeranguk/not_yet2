@@ -13,9 +13,13 @@ public class LoginDAO extends AbstractDAO{
 	
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> findIdWithEmail(Map<String, Object> map) throws Exception{
-		return (Map<String, Object>) selectOne("login.findIdWithEmail", map);
+		return (Map<String, Object>) selectOne("login.selectIdWithEmail", map);
 	}
-	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> findIdWithPhone(Map<String, Object> map) throws Exception {
+		return (Map<String, Object>) selectOne("login.selectIdWithPhone", map);
+	}
+
 	public int findId(Map<String, Object> map) throws Exception {
 		return (Integer)selectOne("login.findId", map);
 	}

@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import org.aspectj.org.eclipse.jdt.core.dom.NullLiteral;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,13 +24,13 @@ public class AgoodsController {
     private GoodsService goodsService;
 
     @RequestMapping(value="/admin/openAdminGoods.do") //관리자 상품리스트
-    public ModelAndView openAdminGoodsList(CommandMap commandMap)throws Exception{
+    public ModelAndView openAdminGoodsList(CommandMap commandMap) throws Exception{
         ModelAndView mv = new ModelAndView("/admin/adminGoodsList");
         List<Map<String, Object>> list = agoodsService.openAgoodsList(commandMap.getMap());
         System.out.println("selectMemberList list 값 확인1 : " + list);
         System.out.println("selectMemberList TOTAL_COUNT값 확인1 : " + list.get(0).get("TOTAL_COUNT"));
         mv.addObject("list", list);
-        mv.addObject("TOTAL", list.get(0).get("TOTAL_COUNT"));
+        mv.addObject("TOTAL", 0);
         return mv;
     }
 

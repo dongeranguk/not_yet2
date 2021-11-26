@@ -4,15 +4,13 @@ package muscle.member.login.controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.xml.transform.sax.SAXSource;
 
 import muscle.common.util.MailService;
 import org.apache.log4j.Logger;
@@ -280,18 +278,63 @@ public class LoginController {
 	}
 
 
-	@RequestMapping(value = "/findId") // 아이디 찾기 폼을 보여주는 메소드
+	@RequestMapping("/findId") // 아이디 찾기 폼을 보여주는 메소드
 	public ModelAndView findId(CommandMap commandMap) throws Exception {
-		int ran = (int)Math.floor(Math.random() * 900000 + 100000);
+		ModelAndView mv = new ModelAndView("/member/findId");
+			return mv;
+	}
 
-		ModelAndView mv = new ModelAndView("/member/findAccount");
-		mv.addObject("random",ran);
+
+	@RequestMapping(value="/findId/{With}", method = {RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView findWithId(@PathVariable(value="With") String with, CommandMap commandMap) throws Exception {
+		ModelAndView mv = new ModelAndView();
+
+		if(with.equals("phone")) {
+			System.out.println("/findId/{phone}으로 실행");
+			System.out.println("commandMap으로 들어오는 데이터 : " + commandMap.getMap());
+			Map<String, Object> map = loginService.findIdWithPhone(commandMap.getMap());
+			System.out.println("findIdWithPhone 쿼리 결과 : " + map);
+			if(map != null) {
+				System.out.println("/member/findIdWithPhone으로 전송되는 값 : " + map);
+				mv.addObject("map", map);
+				mv.setViewName("/member/findIdWithPhone");
+			} else {
+				mv.addObject("result", 0);
+				mv.setViewName("/member/findIdWithPhone");
+			}
+			return mv;
+		} else if(with.equals("email")) {
+			System.out.println("/findId/{email}으로 실행");
+			System.out.println("매개변수로 들어오는 데이터 : " + commandMap.getMap());
+			System.out.println("redirect:/findIdWithemail");
+			mv.setViewName("redirect:/findIdWithemail");
+		}
 		return mv;
 	}
 
-	@RequestMapping(value = "/openFindIdResult", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/text; charset=utf-8")
+	@RequestMapping(value="/member/findIdWithPhone")
+	public ModelAndView findIdWithPhone(CommandMap commandMap) throws Exception {
+		ModelAndView mv = new ModelAndView("/member/findIdWithPhone");
+		return mv;
+	}
+
+	@RequestMapping(value="/findIdWithemail", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/text; charset=utf-8")
+	public @ResponseBody String findIdWitheResult(CommandMap commandMap) throws Exception {
+		Map<String, Object> map = loginService.findIdWithEmail(commandMap.getMap());
+		if(map != null) {
+			System.out.println("findIdWithEmail의 결과 : " + map.entrySet());
+			String to = (String)commandMap.getMap().get("MEM_EMAIL");
+			String id = (String)map.get("MEM_ID");
+			mailService.sendMail(to, id);
+			return "true";
+		} else {
+			return "false";
+		}
+	}
+
+/*	@RequestMapping(value = "/openFindIdResult", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/text; charset=utf-8")
 	public @ResponseBody String findIdResult(CommandMap commandMap) throws Exception {
-		/*int ran = (int)Math.floor(Math.random() * 900000 + 100000);*/
+		*//*int ran = (int)Math.floor(Math.random() * 900000 + 100000);*//*
 		String id = String.valueOf(loginService.findId(commandMap.getMap())); // findId - SELECT COUNT(*)
 		if(id.equals("1")) {
 			String findId = (String)(loginService.findIdWithEmail(commandMap.getMap()).get("MEM_ID"));
@@ -301,23 +344,22 @@ public class LoginController {
 			System.out.println("findIdResult 결과(id) : " + id);
 			return id; // SELECT COUNT(*) 값을 가져온다 따라서, 0
 		}
-	}
+	}*/
 
 
 	@RequestMapping(value = "/findPw") // 비밀번호 찾기 폼을 보여주는 메소드
 	public ModelAndView findPw(CommandMap commandMap) throws Exception {
-		ModelAndView mv = new ModelAndView("/member/findAccount");
+		ModelAndView mv = new ModelAndView("/member/findPw");
 		int ran = (int)Math.floor(Math.random() * 900000 + 100000);
 		System.out.println("랜덤 값 : " + ran);
 		mv.addObject("random",ran); // random인데 ran을 지정해서...
 
 		return mv;
 	}
-
+	// 비밀번호 찾기 확인 버튼을 누르면 실행되는 메서드 ($.ajax() 메서드에서 호출한다.)
 	@RequestMapping(value = "/openFindPwResult", method=RequestMethod.POST)
 	@ResponseBody
 	public boolean findPwEmail(CommandMap commandMap) throws Exception {
-		boolean result;
 		//String authCode = (String)commandMap.get("random"); // null
 		//System.out.println("랜덤 값 : " + authCode); // null
 		System.out.println(commandMap.getMap()); // null X
@@ -349,15 +391,10 @@ public class LoginController {
 			commandMap.put("authCode", authCode);*/
 
 			String to = (String)commandMap.get("MEM_EMAIL");
-			String authCode = (String)commandMap.get("authCode");
+			int authCode = (int)commandMap.get("authCode");
 			mailService.sendMail(to, authCode);
-			result = true;
-			System.out.println(result);
 			return true;
-			/*return mailService.sendMail(subject, sb.toString(),"chkch1991@gmail.com", MEM_EMAIL, null);*/
 		}else {
-			result = false;
-			System.out.println(result);
 			return false;
 		}
 	}

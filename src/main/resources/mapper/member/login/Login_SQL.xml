@@ -25,9 +25,19 @@
 	</select>
 	
 	<!-- 아이디찾기 -->
-	<select id="findIdWithEmail" parameterType="hashmap" resultType="hashmap">
+	<select id="selectIdWithPhone" parameterType="hashmap" resultType="hashmap">
+        <![CDATA[
+		SELECT MEM_ID, MEM_JOINDATE, MEM_PHONEAUTH
+		FROM MEMBER
+		WHERE MEM_NAME = #{name}
+		AND MEM_PHONE = #{phone}
+		AND MEM_DEL_GB = 'N'
+		]]>
+    </select>
+
+	<select id="selectIdWithEmail" parameterType="hashmap" resultType="hashmap">
 	<![CDATA[
-		SELECT  MEM_ID
+		SELECT  MEM_ID, MEM_JOINDATE, MEM_EMAILCK
 		FROM    MEMBER
 		WHERE   MEM_NAME = #{MEM_NAME}
 		AND     MEM_EMAIL = #{MEM_EMAIL}
@@ -68,8 +78,8 @@
 	]]>
 	</update>
 	
-	<select id="findKakaoId" parameterType="hashMap"
-		resultType="hashMap">
+	<select id="findKakaoId" parameterType="hashmap"
+		resultType="hashmap">
 		<![CDATA[
 		SELECT *
 		FROM MEMBER
@@ -78,14 +88,14 @@
 		]]>
 	</select>
 	
-	<update id="kakaoUpdate" parameterType="hashMap">
+	<update id="kakaoUpdate" parameterType="hashmap">
 		UPDATE MEMBER
 		SET MEM_KAKAO_ID = #{MEM_KAKAO_ID},
 			MEM_KAKAO_LINK = #{MEM_KAKAO_LINK}
 	</update>
 	
 	
-	<update id="kakaoUpdate1" parameterType="hashMap">
+	<update id="kakaoUpdate1" parameterType="hashmap">
 		<if test="#{MEM_ID} != null and ''">
 		UPDATE MEMBER
 		SET MEM_KAKAO_ID = #{MEM_KAKAO_ID},
@@ -94,20 +104,20 @@
 		</if>
 	</update>
 	
-	<select id="finder" parameterType="hashMap" resultType="hashMap">
+	<select id="finder" parameterType="hashmap" resultType="hashmap">
 		SELECT *
 		FROM MEMBER
 		WHERE MEM_ID = #{MEM_ID}
 	</select>
 
-	<select id="kakaoLogin" parameterType="hashMap"
-		resultType="hashMap">
+	<select id="kakaoLogin" parameterType="hashmap"
+		resultType="hashmap">
 		SELECT *
 		FROM MEMBER
 		WHERE MEM_ID = #{MEM_ID}
 	</select>
 
-	<insert id="kakaoJoin4" parameterType="hashMap">
+	<insert id="kakaoJoin4" parameterType="hashmap">
 		<selectKey keyProperty="MEM_NUM" resultType="int"
 			order="BEFORE">
 			SELECT MEMBER_SEQ.NEXTVAL FROM DUAL
