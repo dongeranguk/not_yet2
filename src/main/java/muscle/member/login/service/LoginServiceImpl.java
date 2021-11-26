@@ -23,6 +23,11 @@ public class LoginServiceImpl implements LoginService{
 	public Map<String, Object> findIdWithEmail(Map<String, Object> map) throws Exception {
 		return loginDAO.findIdWithEmail(map);
 	}
+
+	@Override
+	public Map<String, Object> findIdWithPhone(Map<String, Object> map) throws Exception {
+		return loginDAO.findIdWithPhone(map);
+	}
 	
 	@Override
 	public int findId(Map<String, Object> map) throws Exception {
