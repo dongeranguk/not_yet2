@@ -25,7 +25,7 @@
        function checkId(){
          if(!document.myform.MEM_ID.value){
            alert("아이디를 입력하지 않으셨습니다.");
-           document.myform.id.focus();
+           document.myform.MEM_ID.focus();
            return false;
          }
          if(!document.myform.MEM_PW.value){
@@ -51,9 +51,6 @@
        }      
        
        $(document).ready(function(){
-    	   
-    	   
-          
           // 저장된 쿠키를 로그인화면에 불러오기위함
           var userInputId = getCookie("userInputId");
           $("#MEM_ID").val(userInputId);  
@@ -119,6 +116,7 @@
 <!-- <body onload="begin()">
  -->
 <!-- 액션login.jsp 경로를 콘트롤러의 RequestMapping과 같음 -->
+<%--@elvariable id="userVO" type=""--%>
 <form:form commandName="userVO" name="myform"
 	action="/muscle/member/kakaoLogin" method="post" class="form-signin">
 
@@ -137,21 +135,21 @@
 	<div
 		style="width: 500px; margin-left: auto; margin-right: auto; margin-bottom: 30px;">
 		<div>
-			<p style="font-size: 30; color: black;" align="center">
+			<p style="font-size: 30px; color: black;" align="center">
 				삼대오백 계정으로 로그인하시면<br> 카카오 계정이 자동으로 연결됩니다.<br>
 			</p>
 		</div>
 
 		<div class="form-group">
-			<label for="inputId">아이디</label>
-			<form:input type="text" class="form-control" placeholder="MEMBER ID"
+			<label for="MEM_ID">아이디</label>
+			<form:input type="text" id="userVO.MEM_ID" name="MEM_ID" class="form-control" placeholder="MEMBER ID"
 				path="MEM_ID" />
 			<font color="red"><form:errors path="MEM_ID" /></font>
 		</div>
 
 		<div class="form-group">
-			<label for="inputPw">비밀번호</label>
-			<form:input type="password" class="form-control"
+			<label for="MEM_PW">비밀번호</label>
+			<form:input type="password" id="userVO.MEM_PW" name="MEM_PW" class="form-control"
 				placeholder="PASSWORD" path="MEM_PW" />
 			<font color="red"><form:errors path="MEM_PW" /></font>
 		</div>
@@ -167,12 +165,12 @@
 
 		<div class="form-group form-check" style="margin-top: 10px;">
 			<div style="float: left;">
-				<span style="margin-left: 30;"><a
+				<span style="margin-left: 30px;"><a
 					href="/muscle/member/findId"><font color='hotpink'>아이디/비밀번호 찾기</font></a></span>
 
 			</div>
 			<div style="float: right;">
-				<span style="margin-right: 90;"><a
+				<span style="margin-right: 90px;"><a
 					href="/muscle/member/openKakaoJoinForm?kakao_id=${MEM_KAKAO_ID}&kakao_link=${MEM_KAKAO_LINK}"><font color='hotpink'>회원가입</font></a></span>
 			</div>
 		</div>
