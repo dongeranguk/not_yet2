@@ -1,4 +1,5 @@
 package muscle.admin.agoods.controller;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -26,10 +27,15 @@ public class AgoodsController {
     @RequestMapping(value="/admin/openAdminGoods.do") //관리자 상품리스트
     public ModelAndView openAdminGoodsList(CommandMap commandMap) throws Exception{
         ModelAndView mv = new ModelAndView("/admin/adminGoodsList");
+        Map<String, Object> map = new HashMap<String, Object>();
         List<Map<String, Object>> list = agoodsService.openAgoodsList(commandMap.getMap());
-        System.out.println("selectMemberList list 값 확인1 : " + list);
-        System.out.println("selectMemberList TOTAL_COUNT값 확인1 : " + list.get(0).get("TOTAL_COUNT"));
-        mv.addObject("list", list);
+        System.out.println("list.size() : " + list.size());
+
+        if(list.size() != 0) {
+            mv.addObject("list", list);
+            mv.addObject("TOTAL", list.get(0).get("TOTAL_COUNT"));
+            return mv;
+        }
         mv.addObject("TOTAL", 0);
         return mv;
     }
@@ -38,10 +44,18 @@ public class AgoodsController {
     public ModelAndView AdminGoodsList(CommandMap commandMap)throws Exception{
         ModelAndView mv = new ModelAndView("jsonView");
         List<Map<String, Object>> list = agoodsService.openAgoodsList(commandMap.getMap());
-        System.out.println("selectMemberList TOTAL_COUNT값 확인2 : " + list.get(0).get("TOTAL_COUNT"));
+        if(list.size() != 0) {
+            mv.addObject("list", list);
+            mv.addObject("TOTAL", list.get(0).get("TOTAL_COUNT"));
+            return mv;
+        }
+        mv.addObject("list", list);
+        mv.addObject("TOTAL", 0);
+        return mv;
+        /*System.out.println("selectMemberList TOTAL_COUNT값 확인2 : " + list.get(0).get("TOTAL_COUNT"));
         mv.addObject("list", list);
         mv.addObject("TOTAL", list.get(0).get("TOTAL_COUNT"));
-        return mv;
+        return mv;*/
     }
 
     @RequestMapping(value = "/admin/openSearchGoods.do") // 관리자 상품리스트 public

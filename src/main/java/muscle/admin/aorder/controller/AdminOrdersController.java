@@ -29,7 +29,7 @@ public class AdminOrdersController {
         return mv;
     }
 
-    // 주문.배송에 STATE별 리스트
+    // 주문,배송에 STATE별 리스트
     @RequestMapping(value="/admin/order_admin_a.do")
     public ModelAndView order_admin_a(CommandMap commandMap,HttpServletRequest request) throws Exception {
 
@@ -213,5 +213,4 @@ public class AdminOrdersController {
 
         return mv;
     }
-
 }

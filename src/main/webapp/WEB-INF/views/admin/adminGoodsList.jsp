@@ -170,7 +170,7 @@
      }
 
      function fn_adminGoodsListCallback(data) {
-        var total = data.TOTAL;    
+        var total = data.TOTAL;
         var body = $("table[name='adminGoodsList']>tbody");
         body.empty();
         if (total == 0) {
